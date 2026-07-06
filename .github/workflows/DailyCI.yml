@@ -1,4 +1,5 @@
 name: Build ZLGitHubClient IPA
+
 on:
   workflow_dispatch:
   push:
@@ -9,27 +10,35 @@ jobs:
     runs-on: macos-15
     steps:
       - uses: actions/checkout@v4
+
       - name: Setup secret files
         working-directory: ./ZLGitHubClient
         run: |
           mv ZLGithubAppKey.h ZLGitHubClient/System/ZLSupportFiles/ZLGithubAppKey.h
           mv GoogleService-Info.plist ZLGitHubClient/GoogleService-Info.plist
+
       - name: Install CocoaPods
         working-directory: ./ZLGitHubClient
-        run: gem install bundler -q && bundle install && bundle exec pod install --repo-update
-      - name: Build unsigned IPA
+        run: |
+          gem install bundler -q
+          bundle install
+          bundle exec pod install --repo-update
+
+      - name: Build signed IPA (development)
         working-directory: ./ZLGitHubClient
         run: |
           xcodebuild -workspace ZLGitHubClient.xcworkspace \
-            -scheme ZLGitHubClient -configuration Release \
+            -scheme ZLGitHubClient -configuration Debug \
             -derivedDataPath build \
-            CODE_SIGN_IDENTITY="" CODE_SIGNING_REQUIRED=NO CODE_SIGNING_ALLOWED=NO \
+            -allowProvisioningUpdates \
+            -allowProvisioningDeviceRegistration \
             clean build
           mkdir -p fastlane/ipa/TestFlight
-          cd build/Build/Products/Release-iphoneos
+          cd build/Build/Products/Debug-iphoneos
           mkdir -p Payload && cp -r ZLGitHubClient.app Payload/
           zip -qr ZLGitHubClient.ipa Payload/
           mv ZLGitHubClient.ipa ../../../../fastlane/ipa/TestFlight/
+
       - uses: actions/upload-artifact@v4
         with:
           name: ZLGitHubClient
