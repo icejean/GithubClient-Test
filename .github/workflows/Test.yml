@@ -1,0 +1,13 @@
+name: ZLGithub Test
+
+on: [push,pull_request,workflow_dispatch]
+
+jobs:
+  build:
+    name: build
+    runs-on: macos-15 # runner 系统 
+    steps:
+    - name: sw_vers
+      run: |
+         sw_vers
+

@@ -1,0 +1,37 @@
+//
+//  ZLGitHubClient-prefix.pch
+//  ZLGitHubClient
+//
+//  Created by 朱猛 on 2019/1/13.
+//  Copyright © 2019年 ZM. All rights reserved.
+//
+
+#ifndef ZLGitHubClient_prefix_pch
+#define ZLGitHubClient_prefix_pch
+
+// Include any system framework and library headers here that should be included in all compilation units.
+// You will also need to set the Prefix Header build setting of one or more of your targets to reference this file.
+#ifdef __OBJC__              // 避免C语言的头文件中引入OC代码
+
+#pragma mark - BaseFramework
+#import <ZLGitRemoteService/ZLGitRemoteService.h>
+#import <SYDCentralPivot/SYDCentralPivot.h>
+
+#pragma mark -
+#import "ZLLanguageModuleProtocol.h"
+#import "UIColor+ZLBase.h"
+
+
+
+#pragma mark - 国际化模块
+
+#define LANMODULE [[SYDCentralFactory sharedInstance] getCommonBean:@"ZLLANModule"]
+#define ZLLocalizedString(string,comment) [LANMODULE localizedWithKey:string]
+
+static const NSNotificationName ZLLanguageTypeChange_Notificaiton = @"ZLLanguageTypeChange_Notificaiton";
+
+static const NSNotificationName ZLUserInterfaceStyleChange_Notification = @"ZLUserInterfaceStyleChange_Notification";
+
+#endif
+
+#endif /* ZLGitHubClient_prefix_pch */
